@@ -59,3 +59,34 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #52525b;
 }
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Optimize image rendering in WeChat browser */
+@supports (-webkit-overflow-scrolling: touch) {
+  img {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* Ensure correct background color rendering in WeChat browser */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background) !important;
+}
+
+/* Optimize gradient text rendering in WeChat browser */
+.bg-gradient-to-r {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}

@@ -68,72 +68,81 @@ export default function NewsGrid() {
   }
 
   return (
-    <section>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-[#ffa07a] to-[#ff7f50] bg-clip-text text-transparent">
-          Latest News
-        </h2>
-        <div className="flex gap-4 overflow-x-auto pb-2">
-          {sources.map((source) => (
-            <button
-              key={source}
-              onClick={() => setActiveSource(source)}
-              className={`px-4 py-2 rounded-md transition-all duration-200 border ${
-                activeSource === source
-                  ? 'bg-[#1f1f1f] text-white border-[#323232]'
-                  : 'bg-[#1f1f1f]/50 text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border-[#27272a] hover:border-[#323232]'
-              }`}
-            >
-              {source}
-            </button>
-          ))}
-        </div>
+    <div className="space-y-6">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
+        {sources.map((source) => (
+          <button
+            key={source}
+            onClick={() => setActiveSource(source)}
+            className={`
+              px-4 py-1.5 rounded-full text-sm whitespace-nowrap
+              ${activeSource === source 
+                ? 'bg-[#27272a] text-white' 
+                : 'text-[#a1a1aa] hover:text-white hover:bg-[#27272a]'
+              }
+              transition-colors duration-200
+            `}
+          >
+            {source}
+          </button>
+        ))}
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 text-[#ff7f50] animate-spin" />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <div 
+              key={i}
+              className="bg-[#1f1f1f] rounded-lg overflow-hidden animate-pulse"
+            >
+              <div className="h-48 bg-[#272727]" />
+              <div className="p-4 space-y-3">
+                <div className="h-4 bg-[#272727] rounded w-3/4" />
+                <div className="h-4 bg-[#272727] rounded w-1/2" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {news.map((item) => (
             <a
               key={item.id}
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group rounded-xl overflow-hidden border border-[#2a2a2a] hover:border-[#ff7f50]/30 bg-[#1c1c1c] transition-all duration-300 shadow-lg hover:shadow-[#ff7f50]/5"
+              className="group bg-[#1f1f1f] rounded-lg overflow-hidden hover:bg-[#272727] transition-colors duration-200"
             >
-              <div className="aspect-video relative">
+              <div className="relative h-48 bg-[#272727] overflow-hidden">
                 <Image
                   src={item.imageUrl}
                   alt={item.title}
                   fill
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform duration-200"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
-                <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-[#1c1c1c]/90 backdrop-blur-sm text-xs text-[#ff7f50]">
-                  {item.category}
+                <div className="absolute top-2 right-2">
+                  <span className="px-2 py-1 text-xs rounded-full bg-black/50 text-[#ff7f50]">
+                    {item.source}
+                  </span>
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-bold mb-2 group-hover:text-[#ff7f50] transition-colors duration-300 line-clamp-2">
+                <h2 className="text-lg font-medium text-white mb-2 line-clamp-2">
                   {item.title}
-                </h3>
-                <p className="text-sm text-[#9ca3af] mb-4 line-clamp-2">
+                </h2>
+                <p className="text-sm text-[#a1a1aa] line-clamp-2">
                   {item.description}
                 </p>
-                <div className="flex items-center justify-between text-xs text-[#9ca3af]">
-                  <span className="flex items-center gap-1">
-                    <span className="w-1 h-1 rounded-full bg-[#ff7f50]"></span>
-                    {item.source}
-                  </span>
+                <div className="mt-4 flex items-center justify-between text-xs text-[#71717a]">
                   <span>{item.timestamp}</span>
+                  <span>{item.category}</span>
                 </div>
               </div>
             </a>
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 } 
