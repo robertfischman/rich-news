@@ -106,16 +106,16 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
       data-trending-sidebar
       className={`
         fixed top-16 right-0 w-72 bg-[#18181b]/95 backdrop-blur-md
-        transform transition-transform duration-300 ease-in-out
+        transform transition-transform duration-300 ease-in-out h-[calc(100vh-4rem)]
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}
-        z-40 border-l border-[#27272a] h-[calc(100vh-4rem)]
+        z-40 border-l border-[#27272a]
       `}
     >
       <div className="flex items-center gap-2 p-2 pl-3 border-b border-[#27272a] sticky top-0 bg-[#18181b]/95 backdrop-blur-md">
         <div className="flex-1 flex items-center gap-2">
           <button
             onClick={() => setSortType('trending')}
-            className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 relative ${
+            className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 ${
               sortType === 'trending' 
                 ? 'bg-[#1f1f1f] text-white border border-[#323232]' 
                 : 'text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border border-[#27272a]'
@@ -125,9 +125,6 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
               <TrendingUp className="w-3 h-3 inline mr-1" />
               <span>Trending</span>
             </div>
-            {/* <span className="absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 text-[10px] text-[#71717a]">
-              Trending
-            </span> */}
           </button>
           <button
             onClick={() => setSortType('gainers')}
@@ -158,7 +155,7 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
         </button>
       </div>
 
-      <div className="overflow-y-auto h-full custom-scrollbar">
+      <div className="overflow-y-auto h-[calc(100%-3.5rem)] custom-scrollbar">
         {isLoading ? (
           <div className="p-3 space-y-2">
             {[...Array(21)].map((_, i) => (
@@ -211,36 +208,6 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
           </div>
         )}
       </div>
-
-      {/* Error state */}
-      {error && (
-        <div className="p-4 text-center">
-          <p className="text-sm text-[#a1a1aa]">{error}</p>
-          <button 
-            onClick={() => {
-              setIsLoading(true);
-              setError(null);
-              const fetchData = async () => {
-                try {
-                  setError(null);
-                  const trendingData = await fetchWithRetry('https://api.coingecko.com/api/v3/search/trending');
-                  // ... rest of the fetch logic
-                } catch (error) {
-                  console.error('Failed to fetch coins:', error);
-                  setError('Failed to load data. Please try again later.');
-                  setCoins([]);
-                } finally {
-                  setIsLoading(false);
-                }
-              };
-              fetchData();
-            }}
-            className="mt-2 px-3 py-1 text-xs bg-[#2e2e35] hover:bg-[#34343b] rounded-md text-white"
-          >
-            Retry
-          </button>
-        </div>
-      )}
     </div>
   );
 } 
