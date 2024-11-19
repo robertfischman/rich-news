@@ -38,14 +38,14 @@ function extractImageFromContent(content: string, source: string): string {
 
   switch (source) {
     case 'ZyCrypto': {
-      // ZyCrypto 的现有逻辑工作正常
+      // ZyCrypto's existing logic works well
       const zycryptoImgMatch = content.match(/<img[^>]+src="([^">]+)"/);
       if (zycryptoImgMatch) return zycryptoImgMatch[1];
       break;
     }
 
     default: {
-      // 默认图片提取逻辑
+      // Default image extraction logic
       const defaultImgMatch = content.match(/<img[^>]+src="([^">]+)"/);
       if (defaultImgMatch) return defaultImgMatch[1];
     }
@@ -54,7 +54,7 @@ function extractImageFromContent(content: string, source: string): string {
   return getDefaultImageForSource(source);
 }
 
-// 为不同的新闻源提供不同的默认图片
+// Provide different default images for different news sources
 function getDefaultImageForSource(source: string): string {
   const defaults: Record<string, string> = {
     'CryptoCompare': '/images/cryptocompare-default.png',
@@ -131,7 +131,7 @@ async function fetchCryptoCompareNews(): Promise<NewsItem[]> {
 
     const data = await response.json();
     
-    // 使用 Set 来存储已经处理过的标题
+    // Use Set to store processed titles
     const seenTitles = new Set();
     
     return data.Data

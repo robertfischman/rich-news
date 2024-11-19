@@ -14,7 +14,7 @@ body {
   overflow-y: scroll;
 }
 
-/* 自定义滚动条样式 */
+/* Custom scrollbar styles */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -35,13 +35,13 @@ body {
   background: #666;
 }
 
-/* 确保水平滚动容器也显示滚动条 */
+/* Ensure horizontal scroll containers show scrollbars */
 .overflow-x-auto {
   scrollbar-width: thin;
   scrollbar-color: #4a4a4f #2e2e35;
 }
 
-/* 自定义滚动条样式 */
+/* Custom scrollbar styles */
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }

@@ -28,7 +28,7 @@ const fetchWithRetry = async (url: string, retries = 3, delayMs = 1000) => {
       return await response.json();
     } catch (error) {
       if (i === retries - 1) throw error;
-      await delay(delayMs * (i + 1)); // 递增延迟
+      await delay(delayMs * (i + 1)); // Increment delay
     }
   }
 };
@@ -44,7 +44,7 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
       try {
         setError(null);
         
-        // 只调用我们的 API route
+        // Only call our API route
         const response = await fetchWithRetry(`/api/trending?sort=${sortType}`);
         
         if (response.error) {
@@ -54,7 +54,7 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
         let sortedCoins: TrendingCoin[] = [];
         
         if (sortType === 'trending' && response.coins) {
-          // 处理趋势榜数据
+          // Process trending data
           sortedCoins = response.coins.map((coin: any) => ({
             id: coin.item.id,
             name: coin.item.name,
@@ -67,7 +67,7 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
             isTrending: true
           }));
         } else {
-          // 处理涨幅榜和市值榜数据
+          // Process gainers and market cap data
           sortedCoins = response.market_data
             .slice(0, 21)
             .map((coin: any) => ({
@@ -95,7 +95,7 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
 
     if (isOpen) {
       fetchCoins();
-      // 每5分钟刷新一次数据
+      // Refresh data every 5 minutes
       const interval = setInterval(fetchCoins, 5 * 60 * 1000);
       return () => clearInterval(interval);
     }
