@@ -125,9 +125,9 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
               <TrendingUp className="w-3 h-3 inline mr-1" />
               <span>Trending</span>
             </div>
-            <span className="absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 text-[10px] text-[#71717a]">
+            {/* <span className="absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 text-[10px] text-[#71717a]">
               Trending
-            </span>
+            </span> */}
           </button>
           <button
             onClick={() => setSortType('gainers')}
