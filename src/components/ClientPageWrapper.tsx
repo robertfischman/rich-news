@@ -12,6 +12,7 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
   const [isTrendingOpen, setIsTrendingOpen] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
 
+  // Handle click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const trendingSidebar = document.querySelector('[data-trending-sidebar]');
@@ -33,6 +34,32 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
     };
   }, [isTrendingOpen]);
 
+  // Disable scrolling and interactions when trending is open
+  useEffect(() => {
+    if (isTrendingOpen) {
+      // Add class to body to prevent scrolling
+      document.body.style.overflow = 'hidden';
+      // Disable all select elements in the main content
+      const selects = mainRef.current?.querySelectorAll('select');
+      selects?.forEach(select => {
+        select.style.pointerEvents = 'none';
+        select.tabIndex = -1;
+      });
+    } else {
+      // Re-enable scrolling and interactions
+      document.body.style.overflow = 'auto';
+      const selects = mainRef.current?.querySelectorAll('select');
+      selects?.forEach(select => {
+        select.style.pointerEvents = 'auto';
+        select.tabIndex = 0;
+      });
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isTrendingOpen]);
+
   return (
     <>
       <Navbar 
@@ -42,13 +69,24 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
       
       <main 
         ref={mainRef}
-        className={`pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto transition-all duration-300 ${
-          isTrendingOpen ? 'blur-sm pointer-events-none' : ''
-        }`}
+        className={`
+          pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto 
+          transition-all duration-300
+          ${isTrendingOpen ? 'blur-sm pointer-events-none select-none' : ''}
+        `}
+        aria-hidden={isTrendingOpen}
       >
         {children}
         <NewsGrid />
       </main>
+
+      {/* Overlay to prevent interactions when trending is open */}
+      {isTrendingOpen && (
+        <div 
+          className="fixed inset-0 z-30 bg-transparent"
+          aria-hidden="true"
+        />
+      )}
     </>
   );
 } 
