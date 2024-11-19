@@ -27,16 +27,16 @@ export default function LongShortRatio() {
     }
 
     fetchLongShortRatio();
-    const interval = setInterval(fetchLongShortRatio, 5 * 60 * 1000); // 每5分钟更新一次
+    const interval = setInterval(fetchLongShortRatio, 5 * 60 * 1000); // Update every 5 minutes
     return () => clearInterval(interval);
   }, []);
 
   function getColorByRatio(ratio: number): string {
-    if (ratio >= 2) return 'text-[#60a5fa]'; // 极度看多
-    if (ratio >= 1.5) return 'text-[#93c5fd]'; // 看多
-    if (ratio >= 0.8) return 'text-[#d1d5db]'; // 中性
-    if (ratio >= 0.5) return 'text-[#fca5a5]'; // 看空
-    return 'text-[#f87171]'; // 极度看空
+    if (ratio >= 2) return 'text-[#fbbf24]'; // Extremely Bullish
+    if (ratio >= 1.5) return 'text-[#fcd34d]'; // Bullish
+    if (ratio >= 0.8) return 'text-[#d1d5db]'; // Neutral
+    if (ratio >= 0.5) return 'text-[#f87171]'; // Bearish
+    return 'text-[#dc2626]'; // Extremely Bearish
   }
 
   if (isLoading) {
