@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
             value: `
               default-src 'self';
               script-src 'self' 'unsafe-eval' 'unsafe-inline';
-              connect-src 'self' https://api.bybit.com;
+              connect-src 'self' https://api.alternative.me https://min-api.cryptocompare.com;
               img-src 'self' https: data:;
               style-src 'self' 'unsafe-inline';
               font-src 'self';
