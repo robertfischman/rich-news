@@ -115,14 +115,19 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
         <div className="flex-1 flex items-center gap-2">
           <button
             onClick={() => setSortType('trending')}
-            className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 ${
+            className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 relative ${
               sortType === 'trending' 
                 ? 'bg-[#1f1f1f] text-white border border-[#323232]' 
                 : 'text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border border-[#27272a]'
             }`}
           >
-            <TrendingUp className="w-3 h-3 inline mr-1" />
-            Trending
+            <div className="flex items-center">
+              <TrendingUp className="w-3 h-3 inline mr-1" />
+              <span>Trending</span>
+            </div>
+            <span className="absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 text-[10px] text-[#71717a]">
+              Trending
+            </span>
           </button>
           <button
             onClick={() => setSortType('gainers')}

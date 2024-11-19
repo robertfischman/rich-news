@@ -1,4 +1,4 @@
-// 服务器组件
+// Server Component
 import ClientPageWrapper from './ClientPageWrapper';
 
 export default function PageLayout() {

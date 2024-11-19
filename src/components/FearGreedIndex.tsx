@@ -53,14 +53,17 @@ export default function FearGreedIndex() {
   if (!data) return null;
 
   return (
-    <div 
-      className="flex items-center gap-1.5 px-2 py-1.5 rounded-md bg-[#1f1f1f]/50 hover:bg-[#2d2d2d] transition-colors duration-200"
-      title={`Fear & Greed Index: ${data.value_classification}`}
-    >
-      <Gauge className="w-4 h-4 text-[#a1a1aa]" />
-      <span className={`text-sm font-mono ${getColorByValue(data.value)}`}>
-        {data.value}
-      </span>
+    <div className="flex flex-col items-center">
+      <div 
+        className="flex items-center gap-1.5 px-2 py-1.5 rounded-md bg-[#1f1f1f]/50 hover:bg-[#2d2d2d] transition-colors duration-200"
+        title={`Fear & Greed Index: ${data.value_classification}`}
+      >
+        <Gauge className="w-4 h-4 text-[#a1a1aa]" />
+        <span className={`text-sm font-mono ${getColorByValue(data.value)}`}>
+          {data.value}
+        </span>
+      </div>
+      <span className="text-[10px] text-[#71717a] mt-0.5">Fear & Greed</span>
     </div>
   );
 } 

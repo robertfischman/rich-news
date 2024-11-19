@@ -56,14 +56,17 @@ export default function LongShortRatio() {
   if (error || !data) return null;
 
   return (
-    <div 
-      className="flex items-center gap-1.5 px-2 py-1.5"
-      title={`Long/Short Ratio: ${data.longShortRatio.toFixed(2)}`}
-    >
-      <Scale className="w-4 h-4 text-[#a1a1aa]" />
-      <span className={`text-sm font-mono ${getColorByRatio(data.longShortRatio)}`}>
-        {data.longShortRatio.toFixed(2)}
-      </span>
+    <div className="flex flex-col items-center">
+      <div 
+        className="flex items-center gap-1.5 px-2 py-1.5"
+        title={`Long/Short Ratio: ${data.longShortRatio.toFixed(2)}`}
+      >
+        <Scale className="w-4 h-4 text-[#a1a1aa]" />
+        <span className={`text-sm font-mono ${getColorByRatio(data.longShortRatio)}`}>
+          {data.longShortRatio.toFixed(2)}
+        </span>
+      </div>
+      <span className="text-[10px] text-[#71717a] mt-0.5">Long/Short</span>
     </div>
   );
 } 
