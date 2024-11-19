@@ -10,13 +10,11 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
 
 export async function GET() {
   try {
-    // Check cache
     const cachedData = cache['long_short'];
     if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
       return NextResponse.json(cachedData.data);
     }
 
-    // Use CryptoCompare OHLCV API
     const response = await fetch(
       `https://min-api.cryptocompare.com/data/v2/histohour?fsym=BTC&tsym=USDT&limit=24&api_key=${process.env.CRYPTOCOMPARE_API_KEY}`
     );
@@ -31,7 +29,6 @@ export async function GET() {
       throw new Error(data.Message);
     }
 
-    // Calculate buy/sell volume ratio from the last 24 hours
     const volumeData = data.Data.Data;
     let buyVolume = 0;
     let sellVolume = 0;
@@ -49,7 +46,6 @@ export async function GET() {
       timestamp: Date.now()
     };
 
-    // Update cache
     cache['long_short'] = {
       data: result,
       timestamp: Date.now()
@@ -58,8 +54,6 @@ export async function GET() {
     return NextResponse.json(result);
   } catch (error) {
     console.error('Error fetching long/short ratio:', error);
-    
-    // Return error response
     return NextResponse.json(
       { error: 'Failed to fetch long/short ratio' },
       { status: 500 }

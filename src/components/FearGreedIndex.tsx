@@ -34,11 +34,11 @@ export default function FearGreedIndex() {
   }, []);
 
   function getColorByValue(value: number): string {
-    if (value >= 80) return 'text-[#fbbf24]'; // Extreme Greed - 金色
-    if (value >= 60) return 'text-[#fcd34d]'; // Greed - 浅金色
-    if (value >= 40) return 'text-[#d1d5db]'; // Neutral - 中性灰色
-    if (value >= 20) return 'text-[#f87171]'; // Fear - 浅红色
-    return 'text-[#dc2626]'; // Extreme Fear - 深红色
+    if (value >= 80) return 'text-[#fbbf24]'; // Extreme Greed
+    if (value >= 60) return 'text-[#fcd34d]'; // Greed
+    if (value >= 40) return 'text-[#d1d5db]'; // Neutral
+    if (value >= 20) return 'text-[#f87171]'; // Fear
+    return 'text-[#dc2626]'; // Extreme Fear
   }
 
   if (isLoading) {
