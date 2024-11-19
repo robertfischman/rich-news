@@ -4,6 +4,18 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
 
+interface NewsItem {
+  id: string;
+  title: string;
+  description: string;
+  source: string;
+  timestamp: string;
+  imageUrl: string;
+  url: string;
+  category: string;
+  tags: string[];
+}
+
 export default function NewsGrid() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [activeSource, setActiveSource] = useState<
