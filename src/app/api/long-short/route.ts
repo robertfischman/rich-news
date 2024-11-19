@@ -16,22 +16,31 @@ export async function GET() {
       return NextResponse.json(cachedData.data);
     }
 
-    // Use Bybit V5 API
+    // Use Bybit V5 API with fetch configuration
     const response = await fetch('https://api.bybit.com/v5/market/account-ratio?category=linear&symbol=BTCUSDT&period=1h&limit=1', {
+      method: 'GET',
       headers: {
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'User-Agent': 'Mozilla/5.0 (compatible; MushNews/1.0;)',
+        'Origin': process.env.VERCEL_URL || 'http://localhost:3000',
       },
-      next: { revalidate: 300 } // 5 minutes cache
+      cache: 'no-store', // Disable cache to ensure fresh data
+      next: { 
+        revalidate: 0 // Disable Next.js cache
+      }
     });
     
     if (!response.ok) {
+      console.error('Bybit API response not ok:', await response.text());
       throw new Error('Failed to fetch long/short ratio');
     }
 
     const data = await response.json();
+    console.log('Bybit API response:', data); // Add logging
     
     if (data.retCode !== 0 || !data.result || !data.result.list || !data.result.list[0]) {
+      console.error('Invalid Bybit API response:', data);
       throw new Error('Invalid response from Bybit API');
     }
 
@@ -50,14 +59,32 @@ export async function GET() {
       timestamp: Date.now()
     };
 
-    return NextResponse.json(result);
+    // Return with explicit headers
+    return new NextResponse(JSON.stringify(result), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Cache-Control': 'no-store, max-age=0',
+      },
+    });
   } catch (error) {
-    console.error('Error fetching long/short ratio:', error);
+    console.error('Error details:', error); // Add detailed error logging
     
-    // Return error response
-    return NextResponse.json(
-      { error: 'Failed to fetch long/short ratio' },
-      { status: 500 }
+    // Return error response with explicit headers
+    return new NextResponse(
+      JSON.stringify({ error: 'Failed to fetch long/short ratio' }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      }
     );
   }
 }
