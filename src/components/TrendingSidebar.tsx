@@ -106,65 +106,67 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
       data-trending-sidebar
       className={`
         fixed top-16 right-0 w-72 bg-[#18181b]/95 backdrop-blur-md
-        transform transition-transform duration-300 ease-in-out h-[calc(100vh-4rem)]
+        transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}
-        z-40 border-l border-[#27272a]
+        z-40 border-l border-[#27272a] h-[calc(100dvh-4rem)]
       `}
     >
-      <div className="flex items-center gap-2 p-2 pl-3 border-b border-[#27272a] sticky top-0 bg-[#18181b]/95 backdrop-blur-md">
-        <div className="flex-1 flex items-center gap-2">
+      <div className="sticky top-0 bg-[#18181b]/95 backdrop-blur-md border-b border-[#27272a] p-2 pl-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSortType('trending')}
+              className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 ${
+                sortType === 'trending' 
+                  ? 'bg-[#1f1f1f] text-white border border-[#323232]' 
+                  : 'text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border border-[#27272a]'
+              }`}
+            >
+              <div className="flex items-center">
+                <TrendingUp className="w-3 h-3 inline mr-1" />
+                <span>Trending</span>
+              </div>
+            </button>
+            <button
+              onClick={() => setSortType('gainers')}
+              className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 ${
+                sortType === 'gainers' 
+                  ? 'bg-[#1f1f1f] text-white border border-[#323232]' 
+                  : 'text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border border-[#27272a]'
+              }`}
+            >
+              Gainers
+            </button>
+            <button
+              onClick={() => setSortType('market_cap')}
+              className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 ${
+                sortType === 'market_cap' 
+                  ? 'bg-[#1f1f1f] text-white border border-[#323232]' 
+                  : 'text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border border-[#27272a]'
+              }`}
+            >
+              MCap
+            </button>
+          </div>
           <button
-            onClick={() => setSortType('trending')}
-            className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 ${
-              sortType === 'trending' 
-                ? 'bg-[#1f1f1f] text-white border border-[#323232]' 
-                : 'text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border border-[#27272a]'
-            }`}
+            onClick={onClose}
+            className="p-1 text-[#a1a1aa] hover:text-white transition-colors duration-200"
           >
-            <div className="flex items-center">
-              <TrendingUp className="w-3 h-3 inline mr-1" />
-              <span>Trending</span>
-            </div>
-          </button>
-          <button
-            onClick={() => setSortType('gainers')}
-            className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 ${
-              sortType === 'gainers' 
-                ? 'bg-[#1f1f1f] text-white border border-[#323232]' 
-                : 'text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border border-[#27272a]'
-            }`}
-          >
-            Gainers
-          </button>
-          <button
-            onClick={() => setSortType('market_cap')}
-            className={`text-xs px-2.5 py-1.5 rounded-md transition-all duration-200 ${
-              sortType === 'market_cap' 
-                ? 'bg-[#1f1f1f] text-white border border-[#323232]' 
-                : 'text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border border-[#27272a]'
-            }`}
-          >
-            MCap
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
-        <button
-          onClick={onClose}
-          className="p-1 text-[#a1a1aa] hover:text-white transition-colors duration-200"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
       </div>
 
-      <div className="overflow-y-auto h-[calc(100%-3.5rem)] custom-scrollbar">
+      <div className="h-[calc(100dvh-8rem)] overflow-y-auto custom-scrollbar">
         {isLoading ? (
           <div className="p-3 space-y-2">
-            {[...Array(21)].map((_, i) => (
+            {[...Array(20)].map((_, i) => (
               <div key={i} className="h-10 bg-[#27272a] rounded animate-pulse" />
             ))}
           </div>
         ) : (
           <div className="p-1.5">
-            {coins.map((coin, index) => (
+            {coins.slice(0, 20).map((coin, index) => (
               <a
                 key={coin.id}
                 href={`https://www.coingecko.com/en/coins/${coin.id}`}
