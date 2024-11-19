@@ -1,9 +1,11 @@
 // Server Component
 import ClientPageWrapper from './ClientPageWrapper';
+import InstallPWA from './InstallPWA';
 
 export default function PageLayout() {
   return (
     <div className="min-h-screen bg-[#1e1e1e]">
+      <InstallPWA />
       <ClientPageWrapper>
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
