@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { newsService, NewsItem } from '@/services/newsService';
 import { Loader2 } from 'lucide-react';
 
 export default function NewsGrid() {
@@ -30,7 +29,7 @@ export default function NewsGrid() {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await newsService.getAllNews(activeSource);
+        const data = await fetch(`/api/news?source=${activeSource}`).then(res => res.json());
         setNews(data);
       } catch (err) {
         setError('Failed to load news. Please try again later.');
