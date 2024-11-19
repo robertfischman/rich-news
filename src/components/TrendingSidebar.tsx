@@ -147,7 +147,7 @@ export default function TrendingSidebar({ isOpen, onClose }: { isOpen: boolean; 
                 : 'text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white border border-[#27272a]'
             }`}
           >
-            Market Cap
+            MCap
           </button>
         </div>
         <button
