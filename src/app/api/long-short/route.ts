@@ -16,11 +16,12 @@ export async function GET() {
       return NextResponse.json(cachedData.data);
     }
 
-    // Use Binance public API with necessary headers
+    // Use Binance API with proxy headers
     const response = await fetch('https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=BTCUSDT&period=5m', {
       headers: {
         'Accept': 'application/json',
         'User-Agent': 'Mozilla/5.0 (compatible; MushNews/1.0;)',
+        'Origin': 'https://mush-news.vercel.app',
       },
       next: { revalidate: 300 } // 5 minutes cache
     });
@@ -30,7 +31,7 @@ export async function GET() {
     }
 
     const data = await response.json();
-    const latestData = data[0];
+    const latestData = data[0]; // Get most recent data point
 
     const result = {
       longShortRatio: parseFloat(latestData.longShortRatio),
@@ -43,31 +44,15 @@ export async function GET() {
       timestamp: Date.now()
     };
 
-    // Set CORS headers
-    return new NextResponse(JSON.stringify(result), {
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
-    });
+    return NextResponse.json(result);
   } catch (error) {
     console.error('Error fetching long/short ratio:', error);
     
-    // Return fallback data if API fails
-    const fallbackData = {
-      longShortRatio: 1.0,
-      timestamp: Date.now()
-    };
-
-    return new NextResponse(JSON.stringify(fallbackData), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
+    // Return error response instead of fallback data
+    return NextResponse.json(
+      { error: 'Failed to fetch long/short ratio' },
+      { status: 500 }
+    );
   }
 }
 

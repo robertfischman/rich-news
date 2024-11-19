@@ -11,16 +11,20 @@ interface LongShortData {
 export default function LongShortRatio() {
   const [data, setData] = useState<LongShortData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchLongShortRatio() {
       try {
+        setError(false);
         const response = await fetch('/api/long-short');
         if (!response.ok) throw new Error('Failed to fetch long/short ratio');
         const data = await response.json();
         setData(data);
       } catch (error) {
         console.error('Error fetching long/short ratio:', error);
+        setError(true);
+        setData(null);
       } finally {
         setIsLoading(false);
       }
@@ -48,7 +52,8 @@ export default function LongShortRatio() {
     );
   }
 
-  if (!data) return null;
+  // Return null if there's an error or no data
+  if (error || !data) return null;
 
   return (
     <div 
