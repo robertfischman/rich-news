@@ -16,12 +16,11 @@ export async function GET() {
       return NextResponse.json(cachedData.data);
     }
 
-    // Use Binance API with proxy headers
-    const response = await fetch('https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=BTCUSDT&period=5m', {
+    // Use Bybit V5 API
+    const response = await fetch('https://api.bybit.com/v5/market/account-ratio?category=linear&symbol=BTCUSDT&period=1h&limit=1', {
       headers: {
         'Accept': 'application/json',
         'User-Agent': 'Mozilla/5.0 (compatible; MushNews/1.0;)',
-        'Origin': 'https://mush-news.vercel.app',
       },
       next: { revalidate: 300 } // 5 minutes cache
     });
@@ -31,10 +30,17 @@ export async function GET() {
     }
 
     const data = await response.json();
-    const latestData = data[0]; // Get most recent data point
+    
+    if (data.retCode !== 0 || !data.result || !data.result.list || !data.result.list[0]) {
+      throw new Error('Invalid response from Bybit API');
+    }
+
+    const latestData = data.result.list[0];
+    const buyRatio = parseFloat(latestData.buyRatio);
+    const sellRatio = parseFloat(latestData.sellRatio);
 
     const result = {
-      longShortRatio: parseFloat(latestData.longShortRatio),
+      longShortRatio: parseFloat((buyRatio / sellRatio).toFixed(2)),
       timestamp: latestData.timestamp
     };
 
@@ -48,7 +54,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching long/short ratio:', error);
     
-    // Return error response instead of fallback data
+    // Return error response
     return NextResponse.json(
       { error: 'Failed to fetch long/short ratio' },
       { status: 500 }
