@@ -45,6 +45,17 @@ const nextConfig: NextConfig = {
           { key: 'Access-Control-Allow-Origin', value: '*' },
           { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS' },
           { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
+          {
+            key: 'Content-Security-Policy',
+            value: `
+              default-src 'self';
+              script-src 'self' 'unsafe-eval' 'unsafe-inline';
+              connect-src 'self' https://api.bybit.com;
+              img-src 'self' https: data:;
+              style-src 'self' 'unsafe-inline';
+              font-src 'self';
+            `.replace(/\s+/g, ' ').trim()
+          }
         ],
       },
     ];
