@@ -38,25 +38,22 @@ export default function Navbar({ isTrendingOpen, setIsTrendingOpen }: NavbarProp
             <div className="flex items-center bg-[#1f1f1f]/50 rounded-md border border-[#27272a] divide-x divide-[#27272a]">
               <FearGreedIndex />
               <LongShortRatio />
+              <button
+                data-trending-button
+                onClick={() => setIsTrendingOpen(!isTrendingOpen)}
+                className={`
+                  px-2 py-1.5
+                  ${isTrendingOpen 
+                    ? 'text-white bg-[#2d2d2d]' 
+                    : 'text-[#a1a1aa] hover:text-white hover:bg-[#2d2d2d]'
+                  }
+                  transition-colors duration-200
+                `}
+                title="Trending Coins"
+              >
+                <TrendingUp className="w-4 h-4" />
+              </button>
             </div>
-
-            {/* Trending Button */}
-            <button
-              data-trending-button
-              onClick={() => setIsTrendingOpen(!isTrendingOpen)}
-              className={`
-                flex items-center gap-2 px-3 py-1.5 rounded-md
-                border border-[#27272a]
-                ${isTrendingOpen 
-                  ? 'bg-[#1f1f1f] text-white border-[#323232]' 
-                  : 'bg-[#1f1f1f]/50 text-[#a1a1aa] hover:bg-[#2d2d2d] hover:text-white hover:border-[#323232]'
-                }
-                transition-all duration-200
-              `}
-            >
-              <TrendingUp className="w-4 h-4" />
-              <span className="text-sm">Trending</span>
-            </button>
           </div>
         </div>
       </div>
