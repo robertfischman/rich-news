@@ -8,7 +8,7 @@ export default function PageLayout() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-[#ffa07a] to-[#ff7f50] bg-clip-text text-transparent">
-              Crypto News Explorer
+              Crypto News Aggregator
             </h1>
             <a
               href="https://github.com/mush-support/mush-news"

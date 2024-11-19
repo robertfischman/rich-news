@@ -1,4 +1,4 @@
-# MushNews - Crypto News Explorer
+# MushNews - Crypto News Aggregator
 MushNews is a crypto news aggregator for Bitcoin and cryptocurrency.
 
 ## Tech Stack
