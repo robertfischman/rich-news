@@ -1,5 +1,5 @@
-# MushNews - Web3 News Explorer
-MushNews is a modern web application that aggregates and displays the latest cryptocurrency and blockchain news from multiple trusted sources. Built with Next.js and TypeScript, it offers a clean, intuitive interface for staying updated with the crypto world.
+# MushNews - Crypto News Explorer
+MushNews is a crypto news aggregator for Bitcoin and cryptocurrency.
 
 ## Tech Stack
 - **Framework**: Next.js 15.0

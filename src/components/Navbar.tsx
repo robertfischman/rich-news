@@ -29,7 +29,7 @@ export default function Navbar({ isTrendingOpen, setIsTrendingOpen }: NavbarProp
               <h1 className="text-lg font-bold bg-gradient-to-r from-[#ffa07a] to-[#ff7f50] bg-clip-text text-transparent">
                 MushNews
               </h1>
-              <p className="text-xs text-[#71717a]">Web3 News Explorer</p>
+              <p className="text-xs text-[#71717a]">Crypto News Explorer</p>
             </div>
           </div>
 

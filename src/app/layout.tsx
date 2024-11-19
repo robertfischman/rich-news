@@ -15,7 +15,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "MushNews",
-  description: "MushNews is a web3 news aggregator for Bitcoin and crypto.",
+  description: "MushNews is a crypto news aggregator for Bitcoin and cryptocurrency.",
 };
 
 export default function RootLayout({
