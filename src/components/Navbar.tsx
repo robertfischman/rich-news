@@ -13,12 +13,20 @@ interface NavbarProps {
 }
 
 export default function Navbar({ isTrendingOpen, setIsTrendingOpen }: NavbarProps) {
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[#27272a] bg-[#18181b]/95 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo Section */}
-          <div className="flex items-center gap-3">
+          {/* Logo Section with refresh functionality */}
+          <div 
+            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={handleRefresh}
+            title="Refresh page"
+          >
             <Image
               src="/mush.png"
               alt="MushNews"
