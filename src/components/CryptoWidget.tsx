@@ -150,10 +150,25 @@ export function Dropdown() {
 
   const cryptoListWithXMR = [...CRYPTO_LIST, { symbol: 'XMR', key: 'XMRUSD' }];
 
+  // Update page title with BTC price
+  const updatePageTitle = (shouldShow: boolean) => {
+    const originalTitle = document.title.split(' | ')[0]; // Get original title without BTC price
+    if (shouldShow) {
+      const btcPrice = prices['BTCUSDT'].current;
+      document.title = `${originalTitle} | BTC: $${btcPrice}`;
+    } else {
+      document.title = originalTitle;
+    }
+  };
+
   return (
     <div className="relative">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          const newIsOpen = !isOpen;
+          setIsOpen(newIsOpen);
+          updatePageTitle(newIsOpen); // Update title based on dropdown state
+        }}
         className={`
           px-2 py-1.5
           ${isOpen 
@@ -172,7 +187,10 @@ export function Dropdown() {
           <div className="flex items-center justify-between p-3 border-b border-[#27272a]">
             <span className="text-sm font-medium text-white">Crypto Prices</span>
             <button 
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                updatePageTitle(false);
+              }}
               className="text-[#a1a1aa] hover:text-white transition-colors"
             >
               <X className="w-4 h-4" />
