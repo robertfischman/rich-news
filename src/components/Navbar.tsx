@@ -26,12 +26,9 @@ export default function Navbar({ isTrendingOpen, setIsTrendingOpen }: NavbarProp
               height={32}
               className="rounded-full"
             />
-            <div>
-              <h1 className="text-lg font-bold bg-gradient-to-r from-[#ffa07a] to-[#ff7f50] bg-clip-text text-transparent">
-                MushNews
-              </h1>
-              <p className="hidden md:block text-xs text-[#71717a]">Crypto News Aggregator</p>
-            </div>
+            <h1 className="text-lg font-bold bg-gradient-to-r from-[#ffa07a] to-[#ff7f50] bg-clip-text text-transparent">
+              MushNews
+            </h1>
           </div>
 
           {/* Navigation Links */}
