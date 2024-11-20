@@ -63,7 +63,10 @@ export default function FearGreedIndex() {
           {data.value}
         </span>
       </div>
-      <span className="text-[10px] text-[#71717a] mt-0.5">Fear & Greed</span>
+      <span className="text-[10px] text-[#71717a] mt-0.5">
+        <span className="md:hidden">F&G</span>
+        <span className="hidden md:inline">Fear & Greed</span>
+      </span>
     </div>
   );
 } 
