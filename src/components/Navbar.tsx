@@ -32,11 +32,14 @@ export default function Navbar({ isTrendingOpen, setIsTrendingOpen }: NavbarProp
           </div>
 
           {/* Navigation Links */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex items-center">
+              <CryptoWidget.MainPrices />
+            </div>
             <div className="flex items-center bg-[#1f1f1f]/50 rounded-md border border-[#27272a] divide-x divide-[#27272a]">
               <FearGreedIndex />
               <LongShortRatio />
-              <CryptoWidget />
+              <CryptoWidget.Dropdown />
               <button
                 data-trending-button
                 onClick={() => setIsTrendingOpen(!isTrendingOpen)}

@@ -8,7 +8,7 @@ type PriceData = Record<string, {
   previous: string;
 }>;
 
-export default function CryptoWidget() {
+const useCryptoPrices = () => {
   const [prices, setPrices] = useState<PriceData>({
     BTCUSDT: { current: '0', previous: '0' },
     ETHUSDT: { current: '0', previous: '0' },
@@ -25,7 +25,6 @@ export default function CryptoWidget() {
     UNIUSDT: { current: '0', previous: '0' },
     XMRUSD: { current: '0', previous: '0' }
   });
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const binanceWs = new WebSocket('wss://stream.binance.com:9443/ws');
@@ -96,11 +95,74 @@ export default function CryptoWidget() {
     };
   }, []);
 
-  const getPriceChangeColor = (current: string, previous: string) => {
-    if (parseFloat(current) > parseFloat(previous)) return 'text-green-400';
-    if (parseFloat(current) < parseFloat(previous)) return 'text-red-400';
-    return 'text-white';
-  };
+  return prices;
+};
+
+const getPriceChangeColor = (current: string, previous: string) => {
+  if (parseFloat(current) > parseFloat(previous)) return 'text-green-400';
+  if (parseFloat(current) < parseFloat(previous)) return 'text-red-400';
+  return 'text-white';
+};
+
+export function MainPrices() {
+  const prices = useCryptoPrices();
+  
+  // List of cryptocurrencies ordered by priority
+  const mainCryptos = [
+    { symbol: 'BTC', key: 'BTCUSDT' },
+    { symbol: 'ETH', key: 'ETHUSDT' },
+    { symbol: 'SOL', key: 'SOLUSDT' },
+    { symbol: 'BNB', key: 'BNBUSDT' },
+    { symbol: 'SUI', key: 'SUIUSDT' },
+    { symbol: 'DOGE', key: 'DOGEUSDT' },
+    { symbol: 'AVAX', key: 'AVAXUSDT' },
+    { symbol: 'XRP', key: 'XRPUSDT' },
+    { symbol: 'ADA', key: 'ADAUSDT' },
+    { symbol: 'TRX', key: 'TRXUSDT' },
+    { symbol: 'TON', key: 'TONUSDT' },
+    { symbol: 'LINK', key: 'LINKUSDT' },
+    { symbol: 'UNI', key: 'UNIUSDT' }
+  ];
+
+  // Component to render price list to avoid code duplication
+  const PriceList = ({ count }: { count: number }) => (
+    <div className="flex items-center">
+      {mainCryptos.slice(0, count).map(({ symbol, key }) => (
+        <div key={key} className="px-3 flex items-center gap-2">
+          <span className="text-[#ffa07a] text-sm">${symbol}</span>
+          <span className="text-white text-sm font-mono">
+            ${prices[key].current}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <>
+      {/* Display different number of coins based on screen width */}
+      <div className="hidden md:flex lg:hidden">
+        <PriceList count={3} />
+      </div>
+      <div className="hidden lg:flex xl:hidden">
+        <PriceList count={4} />
+      </div>
+      <div className="hidden xl:flex 2xl:hidden">
+        <PriceList count={6} />
+      </div>
+      <div className="hidden 2xl:flex 3xl:hidden">
+        <PriceList count={8} />
+      </div>
+      <div className="hidden 3xl:flex">
+        <PriceList count={13} />
+      </div>
+    </>
+  );
+}
+
+export function Dropdown() {
+  const prices = useCryptoPrices();
+  const [isOpen, setIsOpen] = useState(false);
 
   const cryptoList = [
     { symbol: 'BTC', key: 'BTCUSDT' },
@@ -131,7 +193,7 @@ export default function CryptoWidget() {
           }
           transition-colors duration-200
         `}
-        title="Crypto Prices"
+        title="More Crypto Prices"
       >
         <DollarSign className="w-4 h-4" />
       </button>
@@ -154,7 +216,7 @@ export default function CryptoWidget() {
                 className="flex items-center justify-between p-2 hover:bg-[#27272a] rounded-md transition-colors duration-200"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-[#ffa07a] font-medium">{symbol}</span>
+                  <span className="text-[#ffa07a] font-medium">${symbol}</span>
                 </div>
                 <span 
                   className={`font-mono transition-colors duration-200 ${
@@ -170,4 +232,11 @@ export default function CryptoWidget() {
       )}
     </div>
   );
-} 
+}
+
+const CryptoWidget = {
+  MainPrices,
+  Dropdown
+};
+
+export default CryptoWidget; 
