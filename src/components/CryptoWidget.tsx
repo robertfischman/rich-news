@@ -137,7 +137,13 @@ export function MainPrices() {
       <div className="hidden 2xl:flex 3xl:hidden">
         <PriceList count={8} />
       </div>
-      <div className="hidden 3xl:flex">
+      <div className="hidden 3xl:flex 4xl:hidden">
+        <PriceList count={10} />
+      </div>
+      <div className="hidden 4xl:flex 5xl:hidden">
+        <PriceList count={11} />
+      </div>
+      <div className="hidden 5xl:flex">
         <PriceList count={13} />
       </div>
     </>
