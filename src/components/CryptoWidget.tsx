@@ -9,7 +9,7 @@ type PriceData = Record<string, {
   priceChangePercent: string;
 }>;
 
-// Global constant for cryptocurrency list
+// List of supported cryptocurrencies
 const CRYPTO_LIST = [
   { symbol: 'BTC', key: 'BTCUSDT' },
   { symbol: 'ETH', key: 'ETHUSDT' },
@@ -26,6 +26,7 @@ const CRYPTO_LIST = [
   { symbol: 'UNI', key: 'UNIUSDT' }
 ] as const;
 
+// Custom hook for fetching and managing crypto prices
 const useCryptoPrices = () => {
   const [prices, setPrices] = useState<PriceData>(() => {
     const initial: PriceData = {};
@@ -99,12 +100,14 @@ const useCryptoPrices = () => {
   return prices;
 };
 
+// Helper function to determine price change color
 const getPriceChangeColor = (current: string, previous: string) => {
   if (parseFloat(current) > parseFloat(previous)) return 'text-green-400';
   if (parseFloat(current) < parseFloat(previous)) return 'text-red-400';
   return 'text-white';
 };
 
+// Component for displaying main prices in header
 export function MainPrices() {
   const prices = useCryptoPrices();
   
@@ -148,6 +151,7 @@ export function MainPrices() {
   );
 }
 
+// Dropdown component for detailed price view
 export function Dropdown() {
   const prices = useCryptoPrices();
   const [isOpen, setIsOpen] = useState(false);
