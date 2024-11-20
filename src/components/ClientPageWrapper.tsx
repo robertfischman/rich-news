@@ -35,9 +35,10 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
     };
   }, [isTrendingOpen]);
 
-  // Disable scrolling and interactions when trending is open
   useEffect(() => {
-    if (isTrendingOpen || isCryptoPricesOpen) {
+    const isMobile = window.innerWidth < 768; // md breakpoint
+
+    if ((isTrendingOpen || isCryptoPricesOpen) && isMobile) {
       document.body.style.overflow = 'hidden';
       const selects = mainRef.current?.querySelectorAll('select');
       selects?.forEach(select => {
@@ -72,7 +73,7 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
         className={`
           pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto 
           transition-all duration-300
-          ${(isTrendingOpen || isCryptoPricesOpen) ? 'blur-sm pointer-events-none select-none' : ''}
+          ${(isTrendingOpen || isCryptoPricesOpen) ? 'md:blur-none blur-sm md:pointer-events-auto pointer-events-none md:select-text select-none' : ''}
         `}
         aria-hidden={isTrendingOpen || isCryptoPricesOpen}
       >
@@ -80,10 +81,10 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
         <NewsGrid />
       </main>
 
-      {/* Overlay for both trending and crypto prices */}
+      {/* Overlay only for mobile */}
       {(isTrendingOpen || isCryptoPricesOpen) && (
         <div 
-          className="fixed inset-0 z-30 bg-transparent"
+          className="md:hidden fixed inset-0 z-30 bg-transparent"
           aria-hidden="true"
         />
       )}
