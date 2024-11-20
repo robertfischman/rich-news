@@ -6,6 +6,7 @@ import { DollarSign, X } from 'lucide-react';
 type PriceData = Record<string, { 
   current: string;
   previous: string;
+  priceChangePercent: string;
 }>;
 
 // Global constant for cryptocurrency list
@@ -26,31 +27,24 @@ const CRYPTO_LIST = [
 ] as const;
 
 const useCryptoPrices = () => {
-  const [prices, setPrices] = useState<PriceData>({
-    BTCUSDT: { current: '0', previous: '0' },
-    ETHUSDT: { current: '0', previous: '0' },
-    SOLUSDT: { current: '0', previous: '0' },
-    BNBUSDT: { current: '0', previous: '0' },
-    SUIUSDT: { current: '0', previous: '0' },
-    DOGEUSDT: { current: '0', previous: '0' },
-    AVAXUSDT: { current: '0', previous: '0' },
-    XRPUSDT: { current: '0', previous: '0' },
-    ADAUSDT: { current: '0', previous: '0' },
-    TRXUSDT: { current: '0', previous: '0' },
-    TONUSDT: { current: '0', previous: '0' },
-    LINKUSDT: { current: '0', previous: '0' },
-    UNIUSDT: { current: '0', previous: '0' },
-    XMRUSD: { current: '0', previous: '0' }
+  const [prices, setPrices] = useState<PriceData>(() => {
+    const initial: PriceData = {};
+    [...CRYPTO_LIST, { symbol: 'XMR', key: 'XMRUSD' }].forEach(({ key }) => {
+      initial[key] = { current: '0', previous: '0', priceChangePercent: '0' };
+    });
+    return initial;
   });
 
   useEffect(() => {
+    // Binance WebSocket
     const binanceWs = new WebSocket('wss://stream.binance.com:9443/ws');
+    // Kraken WebSocket
     const krakenWs = new WebSocket('wss://ws.kraken.com');
 
     binanceWs.onopen = () => {
       binanceWs.send(JSON.stringify({
         method: 'SUBSCRIBE',
-        params: CRYPTO_LIST.map(({ symbol, key }) => `${key.toLowerCase()}@miniTicker`),
+        params: CRYPTO_LIST.map(({ key }) => `${key.toLowerCase()}@ticker`),
         id: 1
       }));
     };
@@ -59,20 +53,19 @@ const useCryptoPrices = () => {
       krakenWs.send(JSON.stringify({
         event: 'subscribe',
         pair: ['XMR/USD'],
-        subscription: {
-          name: 'ticker'
-        }
+        subscription: { name: 'ticker' }
       }));
     };
 
     binanceWs.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (data.e === '24hrMiniTicker') {
+      if (data.e === '24hrTicker') {
         setPrices(prev => ({
           ...prev,
           [data.s]: {
             previous: prev[data.s].current,
-            current: parseFloat(data.c).toFixed(2)
+            current: parseFloat(data.c).toFixed(2),
+            priceChangePercent: parseFloat(data.P).toFixed(2)
           }
         }));
       }
@@ -82,11 +75,16 @@ const useCryptoPrices = () => {
       const data = JSON.parse(event.data);
       if (Array.isArray(data) && data[2] === 'ticker' && data[3] === 'XMR/USD') {
         const price = data[1].c[0];
+        const openPrice = parseFloat(data[1].o[0]);
+        const currentPrice = parseFloat(price);
+        const priceChange = ((currentPrice - openPrice) / openPrice) * 100;
+        
         setPrices(prev => ({
           ...prev,
           XMRUSD: {
             previous: prev.XMRUSD.current,
-            current: parseFloat(price).toFixed(2)
+            current: currentPrice.toFixed(2),
+            priceChangePercent: priceChange.toFixed(2)
           }
         }));
       }
@@ -116,7 +114,7 @@ export function MainPrices() {
         <div key={key} className="px-3 flex items-center gap-2">
           <span className="text-[#ffa07a] text-sm">${symbol}</span>
           <span className="text-white text-sm font-mono">
-            ${prices[key].current}
+            ${prices[key]?.current || '0'}
           </span>
         </div>
       ))}
@@ -124,7 +122,7 @@ export function MainPrices() {
   );
 
   return (
-    <>
+    <div className="flex-1 overflow-hidden">
       <div className="hidden md:flex lg:hidden">
         <PriceList count={3} />
       </div>
@@ -146,7 +144,7 @@ export function MainPrices() {
       <div className="hidden 5xl:flex">
         <PriceList count={13} />
       </div>
-    </>
+    </div>
   );
 }
 
@@ -158,10 +156,11 @@ export function Dropdown() {
 
   // Update page title with BTC price
   const updatePageTitle = (shouldShow: boolean) => {
-    const originalTitle = document.title.split(' | ')[0]; // Get original title without BTC price
-    if (shouldShow) {
+    const originalTitle = document.title.split(' | ')[0];
+    if (shouldShow && prices['BTCUSDT']) {
       const btcPrice = prices['BTCUSDT'].current;
-      document.title = `${originalTitle} | BTC: $${btcPrice}`;
+      const btcChange = prices['BTCUSDT'].priceChangePercent;
+      document.title = `${originalTitle} | BTC: $${btcPrice} (${parseFloat(btcChange) >= 0 ? '+' : ''}${btcChange}%)`;
     } else {
       document.title = originalTitle;
     }
@@ -173,7 +172,7 @@ export function Dropdown() {
         onClick={() => {
           const newIsOpen = !isOpen;
           setIsOpen(newIsOpen);
-          updatePageTitle(newIsOpen); // Update title based on dropdown state
+          updatePageTitle(newIsOpen);
         }}
         className={`
           px-2 py-1.5
@@ -189,7 +188,7 @@ export function Dropdown() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-[#1f1f1f] rounded-md border border-[#27272a] shadow-lg backdrop-blur-md">
+        <div className="absolute right-0 mt-2 w-80 bg-[#1f1f1f] rounded-md border border-[#27272a] shadow-lg backdrop-blur-md">
           <div className="flex items-center justify-between p-3 border-b border-[#27272a]">
             <span className="text-sm font-medium text-white">Crypto Prices</span>
             <button 
@@ -203,23 +202,40 @@ export function Dropdown() {
             </button>
           </div>
           <div className="p-2 max-h-[calc(100vh-120px)] overflow-y-auto hide-scrollbar">
-            {cryptoListWithXMR.map(({ symbol, key }) => (
-              <div 
-                key={key} 
-                className="flex items-center justify-between p-2 hover:bg-[#27272a] rounded-md transition-colors duration-200"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-[#ffa07a] font-medium">${symbol}</span>
-                </div>
-                <span 
-                  className={`font-mono transition-colors duration-200 ${
-                    getPriceChangeColor(prices[key].current, prices[key].previous)
-                  }`}
+            {cryptoListWithXMR.map(({ symbol, key }) => {
+              const price = prices[key];
+              if (!price) return null;
+
+              return (
+                <div 
+                  key={key} 
+                  className="flex items-center justify-between p-2 hover:bg-[#27272a] rounded-md transition-colors duration-200"
                 >
-                  ${prices[key].current}
-                </span>
-              </div>
-            ))}
+                  <div className="w-16">
+                    <span className="text-[#ffa07a] font-medium">${symbol}</span>
+                  </div>
+                  <div className="flex items-center justify-end flex-1">
+                    <div className="w-20 text-right">
+                      <span 
+                        className={`text-sm ${
+                          parseFloat(price.priceChangePercent) >= 0 
+                            ? 'text-green-400' 
+                            : 'text-red-400'
+                        }`}
+                      >
+                        {parseFloat(price.priceChangePercent) >= 0 ? '+' : ''}
+                        {price.priceChangePercent}%
+                      </span>
+                    </div>
+                    <div className="w-28 text-right ml-4">
+                      <span className="font-mono">
+                        ${price.current}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
