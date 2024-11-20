@@ -10,6 +10,7 @@ interface ClientPageWrapperProps {
 
 export default function ClientPageWrapper({ children }: ClientPageWrapperProps) {
   const [isTrendingOpen, setIsTrendingOpen] = useState(false);
+  const [isCryptoPricesOpen, setIsCryptoPricesOpen] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
 
   // Handle click outside
@@ -36,17 +37,14 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
 
   // Disable scrolling and interactions when trending is open
   useEffect(() => {
-    if (isTrendingOpen) {
-      // Add class to body to prevent scrolling
+    if (isTrendingOpen || isCryptoPricesOpen) {
       document.body.style.overflow = 'hidden';
-      // Disable all select elements in the main content
       const selects = mainRef.current?.querySelectorAll('select');
       selects?.forEach(select => {
         select.style.pointerEvents = 'none';
         select.tabIndex = -1;
       });
     } else {
-      // Re-enable scrolling and interactions
       document.body.style.overflow = 'auto';
       const selects = mainRef.current?.querySelectorAll('select');
       selects?.forEach(select => {
@@ -58,13 +56,15 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [isTrendingOpen]);
+  }, [isTrendingOpen, isCryptoPricesOpen]);
 
   return (
     <>
       <Navbar 
         isTrendingOpen={isTrendingOpen}
         setIsTrendingOpen={setIsTrendingOpen}
+        isCryptoPricesOpen={isCryptoPricesOpen}
+        setIsCryptoPricesOpen={setIsCryptoPricesOpen}
       />
       
       <main 
@@ -72,16 +72,16 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
         className={`
           pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto 
           transition-all duration-300
-          ${isTrendingOpen ? 'blur-sm pointer-events-none select-none' : ''}
+          ${(isTrendingOpen || isCryptoPricesOpen) ? 'blur-sm pointer-events-none select-none' : ''}
         `}
-        aria-hidden={isTrendingOpen}
+        aria-hidden={isTrendingOpen || isCryptoPricesOpen}
       >
         {children}
         <NewsGrid />
       </main>
 
-      {/* Overlay to prevent interactions when trending is open */}
-      {isTrendingOpen && (
+      {/* Overlay for both trending and crypto prices */}
+      {(isTrendingOpen || isCryptoPricesOpen) && (
         <div 
           className="fixed inset-0 z-30 bg-transparent"
           aria-hidden="true"

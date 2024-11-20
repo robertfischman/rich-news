@@ -10,9 +10,16 @@ import CryptoWidget from './CryptoWidget';
 interface NavbarProps {
   isTrendingOpen: boolean;
   setIsTrendingOpen: (isOpen: boolean) => void;
+  isCryptoPricesOpen: boolean;
+  setIsCryptoPricesOpen: (isOpen: boolean) => void;
 }
 
-export default function Navbar({ isTrendingOpen, setIsTrendingOpen }: NavbarProps) {
+export default function Navbar({ 
+  isTrendingOpen, 
+  setIsTrendingOpen,
+  isCryptoPricesOpen,
+  setIsCryptoPricesOpen 
+}: NavbarProps) {
   const handleRefresh = () => {
     window.location.reload();
   };
@@ -47,7 +54,10 @@ export default function Navbar({ isTrendingOpen, setIsTrendingOpen }: NavbarProp
             <div className="flex items-center bg-[#1f1f1f]/50 rounded-md border border-[#27272a] divide-x divide-[#27272a]">
               <FearGreedIndex />
               <LongShortRatio />
-              <CryptoWidget.Dropdown />
+              <CryptoWidget.Dropdown 
+                isOpen={isCryptoPricesOpen}
+                setIsOpen={setIsCryptoPricesOpen}
+              />
               <button
                 data-trending-button
                 onClick={() => setIsTrendingOpen(!isTrendingOpen)}

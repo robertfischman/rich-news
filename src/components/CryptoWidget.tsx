@@ -151,10 +151,13 @@ export function MainPrices() {
   );
 }
 
-// Dropdown component for detailed price view
-export function Dropdown() {
+interface DropdownProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+export function Dropdown({ isOpen, setIsOpen }: DropdownProps) {
   const prices = useCryptoPrices();
-  const [isOpen, setIsOpen] = useState(false);
 
   const cryptoListWithXMR = [...CRYPTO_LIST, { symbol: 'XMR', key: 'XMRUSD' }];
 
