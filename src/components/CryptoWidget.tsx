@@ -3,24 +3,27 @@
 import { useState, useEffect } from 'react';
 import { DollarSign, X } from 'lucide-react';
 
-type PriceData = Record<string, string>;
+type PriceData = Record<string, { 
+  current: string;
+  previous: string;
+}>;
 
 export default function CryptoWidget() {
   const [prices, setPrices] = useState<PriceData>({
-    BTCUSDT: '0',
-    ETHUSDT: '0',
-    SOLUSDT: '0',
-    BNBUSDT: '0',
-    SUIUSDT: '0',
-    DOGEUSDT: '0',
-    AVAXUSDT: '0',
-    XRPUSDT: '0',
-    ADAUSDT: '0',
-    TRXUSDT: '0',
-    TONUSDT: '0',
-    LINKUSDT: '0',
-    UNIUSDT: '0',
-    XMRUSD: '0'
+    BTCUSDT: { current: '0', previous: '0' },
+    ETHUSDT: { current: '0', previous: '0' },
+    SOLUSDT: { current: '0', previous: '0' },
+    BNBUSDT: { current: '0', previous: '0' },
+    SUIUSDT: { current: '0', previous: '0' },
+    DOGEUSDT: { current: '0', previous: '0' },
+    AVAXUSDT: { current: '0', previous: '0' },
+    XRPUSDT: { current: '0', previous: '0' },
+    ADAUSDT: { current: '0', previous: '0' },
+    TRXUSDT: { current: '0', previous: '0' },
+    TONUSDT: { current: '0', previous: '0' },
+    LINKUSDT: { current: '0', previous: '0' },
+    UNIUSDT: { current: '0', previous: '0' },
+    XMRUSD: { current: '0', previous: '0' }
   });
   const [isOpen, setIsOpen] = useState(false);
 
@@ -65,7 +68,10 @@ export default function CryptoWidget() {
       if (data.e === '24hrMiniTicker') {
         setPrices(prev => ({
           ...prev,
-          [data.s]: parseFloat(data.c).toFixed(2)
+          [data.s]: {
+            previous: prev[data.s].current,
+            current: parseFloat(data.c).toFixed(2)
+          }
         }));
       }
     };
@@ -76,7 +82,10 @@ export default function CryptoWidget() {
         const price = data[1].c[0];
         setPrices(prev => ({
           ...prev,
-          XMRUSD: parseFloat(price).toFixed(2)
+          XMRUSD: {
+            previous: prev.XMRUSD.current,
+            current: parseFloat(price).toFixed(2)
+          }
         }));
       }
     };
@@ -86,6 +95,12 @@ export default function CryptoWidget() {
       krakenWs.close();
     };
   }, []);
+
+  const getPriceChangeColor = (current: string, previous: string) => {
+    if (parseFloat(current) > parseFloat(previous)) return 'text-green-400';
+    if (parseFloat(current) < parseFloat(previous)) return 'text-red-400';
+    return 'text-white';
+  };
 
   const cryptoList = [
     { symbol: 'BTC', key: 'BTCUSDT' },
@@ -122,21 +137,32 @@ export default function CryptoWidget() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-[#1f1f1f] rounded-md border border-[#27272a] shadow-lg">
-          <div className="flex items-center justify-between p-2 border-b border-[#27272a]">
-            <span className="text-sm text-white">Crypto Prices</span>
+        <div className="absolute right-0 mt-2 w-64 bg-[#1f1f1f] rounded-md border border-[#27272a] shadow-lg backdrop-blur-md">
+          <div className="flex items-center justify-between p-3 border-b border-[#27272a]">
+            <span className="text-sm font-medium text-white">Crypto Prices</span>
             <button 
               onClick={() => setIsOpen(false)}
-              className="text-[#a1a1aa] hover:text-white"
+              className="text-[#a1a1aa] hover:text-white transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
           <div className="p-2 max-h-[calc(100vh-120px)] overflow-y-auto hide-scrollbar">
             {cryptoList.map(({ symbol, key }) => (
-              <div key={key} className="flex items-center justify-between py-1.5">
-                <span className="text-[#ffa07a] w-12">{symbol}</span>
-                <span className="text-white font-mono">${prices[key]}</span>
+              <div 
+                key={key} 
+                className="flex items-center justify-between p-2 hover:bg-[#27272a] rounded-md transition-colors duration-200"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-[#ffa07a] font-medium">{symbol}</span>
+                </div>
+                <span 
+                  className={`font-mono transition-colors duration-200 ${
+                    getPriceChangeColor(prices[key].current, prices[key].previous)
+                  }`}
+                >
+                  ${prices[key].current}
+                </span>
               </div>
             ))}
           </div>
