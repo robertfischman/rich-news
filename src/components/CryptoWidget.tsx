@@ -8,6 +8,23 @@ type PriceData = Record<string, {
   previous: string;
 }>;
 
+// Global constant for cryptocurrency list
+const CRYPTO_LIST = [
+  { symbol: 'BTC', key: 'BTCUSDT' },
+  { symbol: 'ETH', key: 'ETHUSDT' },
+  { symbol: 'SOL', key: 'SOLUSDT' },
+  { symbol: 'BNB', key: 'BNBUSDT' },
+  { symbol: 'SUI', key: 'SUIUSDT' },
+  { symbol: 'DOGE', key: 'DOGEUSDT' },
+  { symbol: 'AVAX', key: 'AVAXUSDT' },
+  { symbol: 'XRP', key: 'XRPUSDT' },
+  { symbol: 'ADA', key: 'ADAUSDT' },
+  { symbol: 'TRX', key: 'TRXUSDT' },
+  { symbol: 'TON', key: 'TONUSDT' },
+  { symbol: 'LINK', key: 'LINKUSDT' },
+  { symbol: 'UNI', key: 'UNIUSDT' }
+] as const;
+
 const useCryptoPrices = () => {
   const [prices, setPrices] = useState<PriceData>({
     BTCUSDT: { current: '0', previous: '0' },
@@ -33,21 +50,7 @@ const useCryptoPrices = () => {
     binanceWs.onopen = () => {
       binanceWs.send(JSON.stringify({
         method: 'SUBSCRIBE',
-        params: [
-          'btcusdt@miniTicker',
-          'ethusdt@miniTicker',
-          'solusdt@miniTicker',
-          'bnbusdt@miniTicker',
-          'suiusdt@miniTicker',
-          'dogeusdt@miniTicker',
-          'avaxusdt@miniTicker',
-          'xrpusdt@miniTicker',
-          'adausdt@miniTicker',
-          'trxusdt@miniTicker',
-          'tonusdt@miniTicker',
-          'linkusdt@miniTicker',
-          'uniusdt@miniTicker'
-        ],
+        params: CRYPTO_LIST.map(({ symbol, key }) => `${key.toLowerCase()}@miniTicker`),
         id: 1
       }));
     };
@@ -107,27 +110,9 @@ const getPriceChangeColor = (current: string, previous: string) => {
 export function MainPrices() {
   const prices = useCryptoPrices();
   
-  // List of cryptocurrencies ordered by priority
-  const mainCryptos = [
-    { symbol: 'BTC', key: 'BTCUSDT' },
-    { symbol: 'ETH', key: 'ETHUSDT' },
-    { symbol: 'SOL', key: 'SOLUSDT' },
-    { symbol: 'BNB', key: 'BNBUSDT' },
-    { symbol: 'SUI', key: 'SUIUSDT' },
-    { symbol: 'DOGE', key: 'DOGEUSDT' },
-    { symbol: 'AVAX', key: 'AVAXUSDT' },
-    { symbol: 'XRP', key: 'XRPUSDT' },
-    { symbol: 'ADA', key: 'ADAUSDT' },
-    { symbol: 'TRX', key: 'TRXUSDT' },
-    { symbol: 'TON', key: 'TONUSDT' },
-    { symbol: 'LINK', key: 'LINKUSDT' },
-    { symbol: 'UNI', key: 'UNIUSDT' }
-  ];
-
-  // Component to render price list to avoid code duplication
   const PriceList = ({ count }: { count: number }) => (
     <div className="flex items-center">
-      {mainCryptos.slice(0, count).map(({ symbol, key }) => (
+      {CRYPTO_LIST.slice(0, count).map(({ symbol, key }) => (
         <div key={key} className="px-3 flex items-center gap-2">
           <span className="text-[#ffa07a] text-sm">${symbol}</span>
           <span className="text-white text-sm font-mono">
@@ -140,7 +125,6 @@ export function MainPrices() {
 
   return (
     <>
-      {/* Display different number of coins based on screen width */}
       <div className="hidden md:flex lg:hidden">
         <PriceList count={3} />
       </div>
@@ -164,22 +148,7 @@ export function Dropdown() {
   const prices = useCryptoPrices();
   const [isOpen, setIsOpen] = useState(false);
 
-  const cryptoList = [
-    { symbol: 'BTC', key: 'BTCUSDT' },
-    { symbol: 'ETH', key: 'ETHUSDT' },
-    { symbol: 'SOL', key: 'SOLUSDT' },
-    { symbol: 'BNB', key: 'BNBUSDT' },
-    { symbol: 'SUI', key: 'SUIUSDT' },
-    { symbol: 'DOGE', key: 'DOGEUSDT' },
-    { symbol: 'AVAX', key: 'AVAXUSDT' },
-    { symbol: 'XRP', key: 'XRPUSDT' },
-    { symbol: 'ADA', key: 'ADAUSDT' },
-    { symbol: 'TRX', key: 'TRXUSDT' },
-    { symbol: 'TON', key: 'TONUSDT' },
-    { symbol: 'LINK', key: 'LINKUSDT' },
-    { symbol: 'UNI', key: 'UNIUSDT' },
-    { symbol: 'XMR', key: 'XMRUSD' }
-  ];
+  const cryptoListWithXMR = [...CRYPTO_LIST, { symbol: 'XMR', key: 'XMRUSD' }];
 
   return (
     <div className="relative">
@@ -210,7 +179,7 @@ export function Dropdown() {
             </button>
           </div>
           <div className="p-2 max-h-[calc(100vh-120px)] overflow-y-auto hide-scrollbar">
-            {cryptoList.map(({ symbol, key }) => (
+            {cryptoListWithXMR.map(({ symbol, key }) => (
               <div 
                 key={key} 
                 className="flex items-center justify-between p-2 hover:bg-[#27272a] rounded-md transition-colors duration-200"
