@@ -92,13 +92,15 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
         className={`
           pt-24 pb-12 px-4 sm:px-6 lg:px-8 mx-auto
           transition-all duration-300
-          ${windowWidth >= 1920 ? 'max-w-[90rem]' : 'max-w-7xl'}
+          ${windowWidth >= 1920 ? 'max-w-screen-2xl' : 'max-w-7xl'}
           ${(isTrendingOpen || isCryptoPricesOpen) ? 'md:blur-none blur-sm md:pointer-events-auto pointer-events-none md:select-text select-none' : ''}
         `}
         aria-hidden={isTrendingOpen || isCryptoPricesOpen}
         style={{
           minHeight: 'calc(100vh - 4rem)',
-          overflowX: 'hidden'
+          overflowX: 'hidden',
+          // Add zoom compensation for high DPI screens
+          zoom: windowWidth >= 1920 ? '1.2' : '1'
         }}
       >
         {children}

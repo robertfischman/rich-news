@@ -90,3 +90,38 @@ body {
   -webkit-background-clip: text !important;
   background-clip: text !important;
 }
+
+/* High DPI screen optimizations */
+@media screen and (min-resolution: 192dpi), 
+       screen and (min-resolution: 2dppx) {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    font-size: 16px; /* Base font size */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Ensure proper scaling for high DPI screens */
+  @supports (zoom: 1) {
+    body {
+      zoom: 1;
+    }
+  }
+}
+
+/* Optimize for 4K displays with high DPI */
+@media screen and (min-width: 2560px) {
+  html {
+    font-size: 18px; /* Slightly larger base font size for 4K */
+  }
+}
+
+@media screen and (min-width: 3840px) {
+  html {
+    font-size: 20px; /* Even larger base font size for 8K */
+  }
+}
