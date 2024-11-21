@@ -9,7 +9,7 @@ type PriceData = Record<string, {
   priceChangePercent: string;
 }>;
 
-// List of supported cryptocurrencies
+// List of supported cryptocurrencies - only show first 3
 const CRYPTO_LIST = [
   { symbol: 'BTC', key: 'BTCUSDT' },
   { symbol: 'ETH', key: 'ETHUSDT' },
@@ -111,9 +111,9 @@ const getPriceChangeColor = (current: string, previous: string) => {
 export function MainPrices() {
   const prices = useCryptoPrices();
   
-  const PriceList = ({ count }: { count: number }) => (
+  const PriceList = () => (
     <div className="flex items-center">
-      {CRYPTO_LIST.slice(0, count).map(({ symbol, key }) => (
+      {CRYPTO_LIST.slice(0, 3).map(({ symbol, key }) => (
         <div key={key} className="px-3 flex items-center gap-2">
           <span className="text-[#ffa07a] text-sm">${symbol}</span>
           <span className="text-white text-sm font-mono">
@@ -126,26 +126,8 @@ export function MainPrices() {
 
   return (
     <div className="flex-1 overflow-hidden">
-      <div className="hidden md:flex lg:hidden">
-        <PriceList count={3} />
-      </div>
-      <div className="hidden lg:flex xl:hidden">
-        <PriceList count={4} />
-      </div>
-      <div className="hidden xl:flex 2xl:hidden">
-        <PriceList count={6} />
-      </div>
-      <div className="hidden 2xl:flex 3xl:hidden">
-        <PriceList count={8} />
-      </div>
-      <div className="hidden 3xl:flex 4xl:hidden">
-        <PriceList count={10} />
-      </div>
-      <div className="hidden 4xl:flex 5xl:hidden">
-        <PriceList count={11} />
-      </div>
-      <div className="hidden 5xl:flex">
-        <PriceList count={13} />
+      <div className="flex">
+        <PriceList />
       </div>
     </div>
   );
