@@ -17,6 +17,7 @@ const CRYPTO_LIST = [
   { symbol: 'BNB', key: 'BNBUSDT' },
   { symbol: 'SUI', key: 'SUIUSDT' },
   { symbol: 'DOGE', key: 'DOGEUSDT' },
+  { symbol: 'APT', key: 'APTUSDT' },
   { symbol: 'AVAX', key: 'AVAXUSDT' },
   { symbol: 'XRP', key: 'XRPUSDT' },
   { symbol: 'ADA', key: 'ADAUSDT' },
