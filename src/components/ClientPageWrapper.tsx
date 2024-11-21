@@ -12,6 +12,25 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
   const [isTrendingOpen, setIsTrendingOpen] = useState(false);
   const [isCryptoPricesOpen, setIsCryptoPricesOpen] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  // Add window resize listener
+  useEffect(() => {
+    // Initialize window width
+    setWindowWidth(window.innerWidth);
+
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      // Close mobile popups when window size changes to desktop
+      if (window.innerWidth >= 768) {
+        if (isTrendingOpen) setIsTrendingOpen(false);
+        if (isCryptoPricesOpen) setIsCryptoPricesOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isTrendingOpen, isCryptoPricesOpen]);
 
   // Handle click outside
   useEffect(() => {
@@ -36,7 +55,7 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
   }, [isTrendingOpen]);
 
   useEffect(() => {
-    const isMobile = window.innerWidth < 768; // md breakpoint
+    const isMobile = windowWidth < 768; // md breakpoint
 
     if ((isTrendingOpen || isCryptoPricesOpen) && isMobile) {
       document.body.style.overflow = 'hidden';
@@ -57,7 +76,7 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [isTrendingOpen, isCryptoPricesOpen]);
+  }, [isTrendingOpen, isCryptoPricesOpen, windowWidth]);
 
   return (
     <>
@@ -71,20 +90,25 @@ export default function ClientPageWrapper({ children }: ClientPageWrapperProps) 
       <main 
         ref={mainRef}
         className={`
-          pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto 
+          pt-24 pb-12 px-4 sm:px-6 lg:px-8 mx-auto
           transition-all duration-300
+          ${windowWidth >= 1920 ? 'max-w-[90rem]' : 'max-w-7xl'}
           ${(isTrendingOpen || isCryptoPricesOpen) ? 'md:blur-none blur-sm md:pointer-events-auto pointer-events-none md:select-text select-none' : ''}
         `}
         aria-hidden={isTrendingOpen || isCryptoPricesOpen}
+        style={{
+          minHeight: 'calc(100vh - 4rem)',
+          overflowX: 'hidden'
+        }}
       >
         {children}
         <NewsGrid />
       </main>
 
       {/* Overlay only for mobile */}
-      {(isTrendingOpen || isCryptoPricesOpen) && (
+      {(isTrendingOpen || isCryptoPricesOpen) && windowWidth < 768 && (
         <div 
-          className="md:hidden fixed inset-0 z-30 bg-transparent"
+          className="fixed inset-0 z-30 bg-transparent"
           aria-hidden="true"
         />
       )}
