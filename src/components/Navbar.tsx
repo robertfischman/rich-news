@@ -6,6 +6,7 @@ import TrendingSidebar from './TrendingSidebar';
 import FearGreedIndex from './FearGreedIndex';
 import LongShortRatio from './LongShortRatio';
 import CryptoWidget from './CryptoWidget';
+import { useState, useEffect } from 'react';
 
 interface NavbarProps {
   isTrendingOpen: boolean;
@@ -20,6 +21,19 @@ export default function Navbar({
   isCryptoPricesOpen,
   setIsCryptoPricesOpen 
 }: NavbarProps) {
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleRefresh = () => {
     window.location.reload();
   };
@@ -28,7 +42,7 @@ export default function Navbar({
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-[#27272a] bg-[#18181b]/95 backdrop-blur-md">
       <div className={`
         mx-auto px-4 sm:px-6 lg:px-8
-        ${window.innerWidth >= 1920 ? 'max-w-screen-2xl' : 'max-w-7xl'}
+        ${windowWidth >= 1920 ? 'max-w-screen-2xl' : 'max-w-7xl'}
       `}>
         <div className="flex items-center justify-between h-16">
           {/* Logo Section */}
@@ -44,13 +58,13 @@ export default function Navbar({
               height={32}
               className="rounded-full"
               style={{
-                transform: window.innerWidth >= 1920 ? 'scale(1.2)' : 'scale(1)'
+                transform: windowWidth >= 1920 ? 'scale(1.2)' : 'scale(1)'
               }}
             />
             <h1 className={`
               text-lg font-bold bg-gradient-to-r from-[#ffa07a] to-[#ff7f50] 
               bg-clip-text text-transparent
-              ${window.innerWidth >= 1920 ? 'text-xl' : 'text-lg'}
+              ${windowWidth >= 1920 ? 'text-xl' : 'text-lg'}
             `}>
               MushNews
             </h1>
@@ -64,7 +78,7 @@ export default function Navbar({
             <div className={`
               flex items-center bg-[#1f1f1f]/50 rounded-md border border-[#27272a] 
               divide-x divide-[#27272a]
-              ${window.innerWidth >= 1920 ? 'scale-110' : 'scale-100'}
+              ${windowWidth >= 1920 ? 'scale-110' : 'scale-100'}
             `}>
               <FearGreedIndex />
               <LongShortRatio />
