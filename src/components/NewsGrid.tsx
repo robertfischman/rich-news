@@ -27,6 +27,9 @@ export default function NewsGrid() {
   >('All');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [imgError, setImgError] = useState(false);
+  const [imageLoadingStates, setImageLoadingStates] = useState<Record<string, boolean>>({});
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
   const sources = [
     'All', 
@@ -115,12 +118,33 @@ export default function NewsGrid() {
             >
               <div className="relative h-48 bg-[#272727] overflow-hidden">
                 <Image
-                  src={item.imageUrl}
+                  src={imageErrors[item.id] ? '/fallback-image.jpg' : item.imageUrl}
                   alt={item.title}
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-200"
+                  className={`
+                    object-cover 
+                    group-hover:scale-105 
+                    transition-transform duration-200
+                    ${imageLoadingStates[item.id] ? 'opacity-0' : 'opacity-100'}
+                  `}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  loading="lazy"
+                  quality={60}
+                  onError={() => {
+                    setImageErrors(prev => ({ ...prev, [item.id]: true }));
+                  }}
+                  onLoad={() => {
+                    setImageLoadingStates(prev => ({ ...prev, [item.id]: false }));
+                  }}
+                  onLoadingComplete={() => {
+                    setImageLoadingStates(prev => ({ ...prev, [item.id]: false }));
+                  }}
                 />
+                {imageLoadingStates[item.id] && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                  </div>
+                )}
                 <div className="absolute top-2 right-2">
                   <span className="px-2 py-1 text-xs rounded-full bg-black/50 text-[#ff7f50]">
                     {item.source}

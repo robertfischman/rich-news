@@ -157,6 +157,40 @@ async function fetchCryptoCompareNews(): Promise<NewsItem[]> {
   }
 }
 
+function sanitizeImageUrl(url: string): string {
+  try {
+    new URL(url);
+    return url;
+  } catch {
+    return '/fallback-image.jpg';
+  }
+}
+
+// Add image URL validation and optimization
+function optimizeImageUrl(url: string, source: string): string {
+  try {
+    const urlObj = new URL(url);
+    
+    // Handle specific source optimizations
+    switch (source) {
+      case 'CryptoCompare':
+        // Already optimized, return as is
+        return url;
+      case 'CoinTelegraph':
+        // Add size parameters if needed
+        return `${url}?format=webp&width=720`;
+      case 'Bitcoin.com':
+        // Add size parameters if needed
+        return `${url}?w=720&q=75`;
+      default:
+        return url;
+    }
+  } catch {
+    // Return default image if URL is invalid
+    return getDefaultImageForSource(source);
+  }
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -177,7 +211,10 @@ export async function GET(request: Request) {
             description: item.contentSnippet || '',
             source: selectedFeed.name,
             timestamp: new Date(item.pubDate || '').toLocaleDateString(),
-            imageUrl: extractImageFromContent(item.content || '', selectedFeed.name),
+            imageUrl: optimizeImageUrl(
+              extractImageFromContent(item.content || '', selectedFeed.name),
+              selectedFeed.name
+            ),
             url: item.link || '',
             category: 'Crypto',
             tags: []
@@ -197,7 +234,10 @@ export async function GET(request: Request) {
             description: item.contentSnippet || '',
             source: feed.name,
             timestamp: new Date(item.pubDate || '').toLocaleDateString(),
-            imageUrl: extractImageFromContent(item.content || '', feed.name),
+            imageUrl: optimizeImageUrl(
+              extractImageFromContent(item.content || '', feed.name),
+              feed.name
+            ),
             url: item.link || '',
             category: 'Crypto',
             tags: []
